@@ -1,47 +1,57 @@
 #include <iostream>
 #include <cmath>
-
-#include <signal.h>
-
 #include <mbot_bridge/robot.h>
 #include <wall_follower/common/utils.h>
 
-bool ctrl_c_pressed;
-void ctrlc(int)
-{
-    ctrl_c_pressed = true;
-}
-
-
 int main(int argc, const char *argv[])
 {
-    signal(SIGINT, ctrlc);
-    signal(SIGTERM, ctrlc);
-
     // Initialize the robot.
     mbot_bridge::MBot robot;
-    // Create empty vectors to store the scan data.
-    std::vector<float> ranges;
-    std::vector<float> thetas;
 
-    /**
-     * TODO: Declare any variables you need here.
-     */
+    // Define time intervals
+    const double forward_time = 2.0;  // Time to drive straight (adjust as needed)
+    const double turn_time = 1.0;     // Time to turn (adjust as needed)
 
-    while (true) {
-        // This function gets the Lidar scan data.
-        robot.readLidarScan(ranges, thetas);
+    // Number of times to drive in a square
+    const int repetitions = 3;
 
-        /**
-         * TODO: (P1.2) Write code to follow the nearest wall here.
-         *
-         * HINT: You should use the functions crossProduct and findMinDist.
-         */
+    // Drive in a square three times
+    for (int i = 0; i < repetitions; ++i) {
+        // Drive forward
+        robot.drive(0.5, 0.0, 0.0); // Forward at vx = 0.5, vy = 0, wz = 0
+        sleepFor(forward_time);      // Sleep for the forward duration
 
-        if (ctrl_c_pressed) break;
+        // Turn 90 degrees
+        robot.drive(0.0, 0.0, 1.0); // Rotate at wz = 1.0
+        sleepFor(turn_time);         // Sleep for the turn duration
+
+        // Drive forward
+        robot.drive(0.5, 0.0, 0.0);  // Forward at vx = 0.5, vy = 0, wz = 0
+        sleepFor(forward_time);       // Sleep for the forward duration
+
+        // Turn 90 degrees
+        robot.drive(0.0, 0.0, 1.0); // Rotate at wz = 1.0
+        sleepFor(turn_time);         // Sleep for the turn duration
+
+        // Drive forward
+        robot.drive(0.5, 0.0, 0.0);  // Forward at vx = 0.5, vy = 0, wz = 0
+        sleepFor(forward_time);       // Sleep for the forward duration
+
+        // Turn 90 degrees
+        robot.drive(0.0, 0.0, 1.0); // Rotate at wz = 1.0
+        sleepFor(turn_time);         // Sleep for the turn duration
+
+        // Drive forward
+        robot.drive(0.5, 0.0, 0.0);  // Forward at vx = 0.5, vy = 0, wz = 0
+        sleepFor(forward_time);       // Sleep for the forward duration
+
+        // Turn 90 degrees to complete the square
+        robot.drive(0.0, 0.0, 1.0); // Rotate at wz = 1.0
+        sleepFor(turn_time);         // Sleep for the turn duration
     }
 
     // Stop the robot.
+    std::cout << "Stopping the robot!!" << std::endl;
     robot.stop();
     return 0;
 }
